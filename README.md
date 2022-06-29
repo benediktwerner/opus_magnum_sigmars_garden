@@ -2,6 +2,10 @@
 
 Solver to automatically play the *Sigmar's Garden* mini game in the *Opus Magnum* game.
 
+## Video
+
+[![YouTube Video of the solver in action](http://img.youtube.com/vi/mLaJSjhnD54/0.jpg)](http://www.youtube.com/watch?v=mLaJSjhnD54 "Automated Sigmar's Garden (Opus Magnum Minigame) Solver")
+
 ## Usage
 
 1. Make sure you have a recent installation of Python. Probably 3.6+ should work, 3.8+ definitely works.
