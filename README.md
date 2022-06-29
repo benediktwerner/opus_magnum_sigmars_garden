@@ -21,6 +21,8 @@ Solver to automatically play the *Sigmar's Garden* mini game in the *Opus Magnum
 
 To detect the board, the solver utilizes the fact that the game highlights matching elements when clicking on an element in the bottom bar. It takes a screenshot at the start, then clicks on each elements, compares the two images, and everywhere something changed the clicked on element is present.
 
+Credit to that idea goes to [Doublevil/SigmarsBoredom](https://github.com/Doublevil/SigmarsBoredom).
+
 Unfortunately, the dark and light elements don't appear in the bottom bar so for those, we first do a differnece with the empty calibration board taken at the start. This, together with the already identified elements allows us to figure out where the leftover dark and light elements are. We then just take the average color in the center of those cells to figure out which one it is.
 
 ### Solver
