@@ -8,7 +8,8 @@ Solver to automatically play the *Sigmar's Garden* mini game in the *Opus Magnum
 2. Install requirements: `pip install -r requirements.txt`
 3. Run `python main.py`
    - You can pass a number to play that many games at once (otherwise it only plays one): `python main.py 25`
-4. On the first run, you need to have a cleared board to take a calibration image. The sovler will then ask you to place your mouse on a few key locations. To confirm a position, focus the message dialog that opens, move your mouse to the correct position, and confirm the dialog using the <kbd>Enter</kbd> key. After the first run, these values will be saved and won't be required on subsequent runs. If anything about your display resolution changes, you can delete the generated `positions.json` and `empty.png` files to clear the values.
+4. The solver will wait 3 seconds at the start to give you time to focus the game window
+5. On the first run, you need to have a cleared board to take a calibration image. The sovler will then ask you to place your mouse on a few key locations. To confirm a position, focus the message dialog that opens, move your mouse to the correct position, and confirm the dialog using the <kbd>Enter</kbd> key. After the first run, these values will be saved and won't be required on subsequent runs. If anything about your display resolution changes, you can delete the generated `positions.json` and `empty.png` files to clear the values.
 
 ## How it works
 
