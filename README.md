@@ -25,6 +25,6 @@ Unfortunately, the dark and light elements don't appear in the bottom bar so for
 
 ### Solver
 
-The solver is just a very simple brute-force backtracking solver. The only optimization is aborting the search when the number of cardinal elements and salts makes it unsolvable, i.e. when the number of cardinal elements with an odd amount left is greated than the number of salts left.
+The solver is just a very simple brute-force backtracking solver i.e. it just tries every possible order of valid element combination until it finds one that clears the board. The only optimization is aborting the search when the number of cardinal elements and salts makes it unsolvable, i.e. when the number of cardinal elements with an odd amount left is greater than the number of salts left.
 
 The game is simple enough that even this very basic and inefficient implementation in Python is quick enough to solve most boards. For difficult boards, the solver just restarts after visiting 1M nodes.
