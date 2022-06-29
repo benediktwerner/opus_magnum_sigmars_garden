@@ -1,6 +1,6 @@
 # Opus Magnum Sigmar's Garden Mini Game Solver
 
-Solver to automatically play the *Sigmar's Garden* mini game in the *Opus Magnum* game.
+Solver to automatically play *Sigmar's Garden*, the puzzle mini game innside *Opus Magnum*.
 
 ## Video
 
