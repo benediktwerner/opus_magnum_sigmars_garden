@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from enum import IntEnum
+from os import path
 from typing import List, Optional, Tuple
 
-import numpy as np
 
-POSITIONS_FILE = "positions.json"
-EMPTY_FILE = "empty.png"
+DIRNAME = path.dirname(__file__)
+POSITIONS_FILE = path.join(DIRNAME, "positions.json")
+EMPTY_FILE = path.join(DIRNAME, "empty.png")
 
 
 class Element(IntEnum):
