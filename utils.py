@@ -8,15 +8,25 @@ import win32con
 from pyautogui import Point
 
 
+def safety_check() -> None:
+    x, y = win32api.GetCursorPos()
+    if x < 100 and y < 100:
+        print("Mouse moved to top left corner. Aborting.")
+        exit(2)
+
+
 def mouseDown() -> None:
+    safety_check()
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
 
 
 def mouseUp() -> None:
+    safety_check()
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
 
 
 def moveTo(p: Point) -> None:
+    safety_check()
     win32api.SetCursorPos((int(p.x), int(p.y)))
 
 
