@@ -11,7 +11,10 @@ Solver to automatically play *Sigmar's Garden*, the puzzle mini game innside *Op
 1. Make sure you have a recent installation of Python. Probably 3.6+ should work, 3.8+ definitely works.
 2. Install requirements: `pip install -r requirements.txt`
 3. Run `python main.py`
-   - You can pass a number to play that many games at once (otherwise it only plays one): `python main.py 25`
+   - Pass a number to play that many games at once (otherwise it only plays one): `python main.py 25`
+   - Pass `-d 0.1` (or replace `0.1` with any other number) to change the delay between clicks: `python main.py -d 0.1`. The default is `0.02` (seconds). If you are getting bad detection across the board or the board doesn't get cleared properly when it starts to solve, chances are the delay is too small for your PC and the game can't keep up.
+   - Pass `--show-detection` to detect the board, display what it detected, and then exit without trying to solve: `python main.py --show-detection`. The window showing the detected board may open in the background i.e. you may have to Alt+Tab to see it.
+   - You can also combine multiple options, e.g. `python main.py -d 0.1 --show-detection` or `python main.py 25 -d 0.1`
 4. The solver will wait 3 seconds at the start to give you time to focus the game window
 5. On the first run, you need to have a cleared board to take a calibration image. The sovler will then ask you to place your mouse on a few key locations. To confirm a position, focus the message dialog that opens, move your mouse to the correct position, and confirm the dialog using the <kbd>Enter</kbd> key. After the first run, these values will be saved and won't be required on subsequent runs. If anything about your display resolution changes, you can delete the generated `positions.json` and `empty.png` files to clear the values.
 

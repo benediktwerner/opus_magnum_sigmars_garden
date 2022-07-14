@@ -10,7 +10,7 @@ from utils import mouseDown, mouseUp, moveTo
 DECK = [0, "l", "s", "s", "s", "l", "l", "s", "s", "s", "s", "s"]
 
 
-def detect_board(setup: Setup) -> Board:
+def detect_board(setup: Setup, click_delay: float, show_detection: bool) -> Board:
     cells = setup.generate_cell_positions()
     board: Board = [[None] * len(row) for row in cells]
 
@@ -34,7 +34,7 @@ def detect_board(setup: Setup) -> Board:
             deck_x += setup.deck_width_small
         moveTo(Point(deck_x, setup.deck1_pos.y))
         mouseDown()
-        sleep(0.02)
+        sleep(click_delay)
         hover = setup.screenshot()
         mouseUp()
 
@@ -96,24 +96,29 @@ def detect_board(setup: Setup) -> Board:
     # cv2.imshow("x", diff)
     # cv2.waitKey()
 
-    ###### show detected values
-    # for rowc, rowv in zip(cells, board):
-    #     for c, v in zip(rowc, rowv):
-    #         if v is None:
-    #             continue
-    #         c = setup.to_screenshot_space(c)
-    #         clean = cv2.putText(
-    #             clean,
-    #             str(v)[len("Element."):],
-    #             (int(c.x), int(c.y)),
-    #             cv2.FONT_HERSHEY_SIMPLEX,
-    #             0.5,
-    #             (0, 0, 255),
-    #         )
-    # cv2.imwrite("board.png", clean)
-    # cv2.imshow("x", clean)
-    # cv2.waitKey()
-    # sleep(5)
+    # show detected values
+    if show_detection:
+        for rowc, rowv in zip(cells, board):
+            for c, v in zip(rowc, rowv):
+                if v is None:
+                    continue
+                c = setup.to_screenshot_space(c)
+                name = str(v)[len("Element.") :]
+                if name == "QUICKSILVER":
+                    name = "QS"
+                clean = cv2.putText(
+                    clean,
+                    name,
+                    (int(c.x), int(c.y)),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (0, 0, 0),
+                    2
+                )
+        cv2.imshow("Detected board (press any key to continue)", clean)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        exit(3)
 
     # with open(BOARD_FILE, "w") as f:
     #     json.dump(board, f)

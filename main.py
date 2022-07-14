@@ -1,4 +1,4 @@
-import sys
+import argparse
 from time import sleep
 
 from detection import detect_board
@@ -6,15 +6,29 @@ from setup import perform_setup
 from solver import Solver
 from utils import mouseDown, mouseUp, moveTo
 
-args = sys.argv
-if len(args) > 2 or len(args) == 2 and not args[1].isnumeric():
-    print("Usage:", args[0], "[optional: games to play]")
-    exit(1)
 
-if len(args) == 2:
-    games_to_play = int(args[1])
-else:
-    games_to_play = 1
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "games", help="number of games to play", type=int, default=1, nargs="?"
+)
+parser.add_argument(
+    "-d",
+    "--click-delay",
+    dest="click_delay",
+    help="delay between clicks",
+    type=float,
+    default=0.02,
+    metavar="DELAY",
+)
+parser.add_argument(
+    "--show-detection",
+    help="display detected board state and exit",
+    action="store_true",
+)
+args = parser.parse_args()
+
+click_delay = args.click_delay
+slow_click_delay = min(max(0.1, click_delay), 1)
 
 
 # Sleep at the start to allow focusing the game
@@ -26,8 +40,8 @@ for i in range(3, 0, -1):
 setup = perform_setup()
 cell_pos = setup.generate_cell_positions()
 
-for _ in range(games_to_play):
-    board = detect_board(setup)
+for _ in range(max(1, args.games)):
+    board = detect_board(setup, click_delay, args.show_detection)
     print("Starting solve")
     sol = Solver(board).solve()
 
@@ -37,15 +51,15 @@ for _ in range(games_to_play):
         for x, y in reversed(sol):
             p = cell_pos[y][x]
             moveTo(p)
-            sleep(0.02)
+            sleep(click_delay)
             mouseDown()
-            sleep(0.02)
+            sleep(click_delay)
             mouseUp()
 
-    sleep(0.1)
+    sleep(slow_click_delay)
     moveTo(setup.new_game_btn_pos)
-    sleep(0.1)
+    sleep(slow_click_delay)
     mouseDown()
-    sleep(0.1)
+    sleep(slow_click_delay)
     mouseUp()
     sleep(5)
