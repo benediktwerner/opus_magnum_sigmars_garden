@@ -16,7 +16,7 @@ class Element(IntEnum):
     FIRE = 3
     WIND = 4
     EARTH = 5
-    QUICKSIVER = 6
+    QUICKSILVER = 6
     LEAD = 7
     TIN = 8
     IRON = 9
@@ -31,10 +31,10 @@ class Element(IntEnum):
             return other <= Element.EARTH
         if Element.WATER <= self <= Element.EARTH:
             return other == Element.SALT or self == other
-        if self == Element.QUICKSIVER:
+        if self == Element.QUICKSILVER:
             return Element.LEAD <= other < Element.GOLD
         if Element.LEAD <= self < Element.GOLD:
-            return other == Element.QUICKSIVER
+            return other == Element.QUICKSILVER
         if self == Element.DARK:
             return other == Element.LIGHT
         if self == Element.LIGHT:
