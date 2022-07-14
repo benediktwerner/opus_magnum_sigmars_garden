@@ -60,25 +60,25 @@ def perform_setup() -> Setup:
             deck_width_small = data["deck_width_small"]
             deck_width_large = data["deck_width_large"]
     else:
-        alert("Hover over new game button")
+        alert("Hover over the new game button")
         new_game = position()
 
-        alert("Hover over top left cell")
+        alert("Hover over the center of the top left cell")
         top_left = position()
 
-        alert("Hover over bottom right cell")
+        alert("Hover over the center of the bottom right cell")
         bottom_right = position()
 
         width = (bottom_right.x - top_left.x) // 5
         height = (bottom_right.y - top_left.y) // 10
 
-        alert("Hover over first element in bottom bar")
+        alert("Hover over the center of the first element (salt) in the bottom bar")
         deck1 = position()
 
-        alert("Hover over second element in bottom bar")
+        alert("Hover over the center of the second element (water) in the bottom bar")
         deck2 = position()
 
-        alert("Hover over third element in bottom bar")
+        alert("Hover over the center of the third element (fire) in the bottom bar")
         deck3 = position()
 
         deck_width_small = deck3.x - deck2.x
