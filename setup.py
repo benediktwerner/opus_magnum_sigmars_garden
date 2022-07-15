@@ -106,7 +106,7 @@ def perform_setup() -> Setup:
     if os.path.isfile(EMPTY_FILE):
         empty_img = cv2.imread(EMPTY_FILE)
     else:
-        alert("Make sure the board is empty before pressing ok")
+        alert("Make sure the board is empty (i.e. there are no more elements on the board, if necessary, solve the game manually once) before pressing ok.")
         sleep(1)
         empty_img = s.screenshot()
         cv2.imwrite(EMPTY_FILE, empty_img)
