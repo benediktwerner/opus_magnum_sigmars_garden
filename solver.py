@@ -1,5 +1,6 @@
-from itertools import chain
-from typing import List, Optional, Set
+from __future__ import annotations
+
+from typing import Any, Iterator, List, Optional, Set, Tuple
 
 from consts import Board, Coord, Element
 
@@ -33,13 +34,12 @@ def generate_neighbors() -> List[List[List[Optional[Coord]]]]:
 NEIGHBORS = generate_neighbors()
 
 
-class Solver:
+class BoardState:
     def __init__(self, board: Board):
         self.board = board
-        self.possible: Set[Coord] = set()
+        self.accessible: Set[Coord] = set()
         self.counts = [0 for _ in range(len(Element) + 1)]
         self.metal_level = Element.LEAD
-        self.timeout = 1_000_000
 
         for row in board:
             for v in row:
@@ -51,12 +51,24 @@ class Solver:
                 if v is None:
                     continue
                 if self.is_accessible(x, y):
-                    self.possible.add((x, y))
+                    self.accessible.add((x, y))
+
+    @property
+    def solved(self) -> bool:
+        return not self.accessible
+
+    def __getitem__(self, index: Coord) -> Optional[Element]:
+        x, y = index
+        return self.board[y][x]
+
+    def __setitem__(self, index: Coord, value: Optional[Element]) -> None:
+        x, y = index
+        self.board[y][x] = value
 
     def is_accessible(self, x: int, y: int) -> bool:
         c = 0
         for n in NEIGHBORS[y][x]:
-            if n is None or self.board[n[1]][n[0]] is None:
+            if n is None or self[n] is None:
                 c += 1
                 if c == 3:
                     break
@@ -64,7 +76,7 @@ class Solver:
                 c = 0
         else:
             for n in NEIGHBORS[y][x][:2]:
-                if n is None or self.board[n[1]][n[0]] is None:
+                if n is None or self[n] is None:
                     c += 1
                     if c == 3:
                         break
@@ -74,94 +86,131 @@ class Solver:
                 return False
         return True
 
-    def solve(self) -> Optional[List[Coord]]:
-        self.timeout -= 1
-        if self.timeout < 0:
-            return None
+    def hash(self) -> int:
+        h = 0
+        for row in self.board:
+            for c in row:
+                if c is None:
+                    h |= 1
+                h <<= 1
+        return h
 
-        if (
+    def salts_solvable(self) -> bool:
+        return (
             sum(self.counts[e] % 2 for e in Element.basics())
-            > self.counts[Element.SALT]
-        ):
-            return None
+            <= self.counts[Element.SALT]
+        )
 
-        pos = list(self.possible)
-        for i, (x, y) in enumerate(pos):
-            typ = self.board[y][x]
+    def possible_moves(self) -> Iterator[Tuple[Coord, ...]]:
+        pos = list(self.accessible)
+
+        for i, c in enumerate(pos):
+            typ = self[c]
             assert typ is not None
+
             if typ.is_metal:
                 if self.metal_level != typ:
                     continue
 
                 if typ == Element.GOLD:
-                    self.board[y][x] = None
-                    self.possible.remove((x, y))
-                    news = set()
-                    for n in NEIGHBORS[y][x]:
-                        if (
-                            n is not None
-                            and n not in self.possible
-                            and self.board[n[1]][n[0]]
-                            and self.is_accessible(*n)
-                        ):
-                            news.add(n)
-                    self.possible |= news
-                    if not self.possible:
-                        return [(x, y)]
-                    result = self.solve()
-                    if result:
-                        result.append((x, y))
-                        return result
-                    self.possible -= news
-                    self.board[y][x] = typ
-                    self.possible.add((x, y))
+                    yield (c,)
                     continue
 
-                self.metal_level = self.metal_level.nxt()
-
-            for nx, ny in pos[i + 1 :]:
-                ntyp = self.board[ny][nx]
+            for nc in pos[i + 1 :]:
+                ntyp = self[nc]
                 assert ntyp is not None
                 if typ.compatible(ntyp):
-                    if ntyp.is_metal:
-                        if ntyp != self.metal_level:
-                            continue
-                        self.metal_level = self.metal_level.nxt()
-                    self.board[y][x] = None
-                    self.board[ny][nx] = None
-                    self.possible.remove((x, y))
-                    self.possible.remove((nx, ny))
-                    news = set()
-                    for n in chain(NEIGHBORS[y][x], NEIGHBORS[ny][nx]):
-                        if (
-                            n is not None
-                            and n not in self.possible
-                            and self.board[n[1]][n[0]]
-                            and self.is_accessible(*n)
-                        ):
-                            news.add(n)
-                    self.possible |= news
-                    if not self.possible:
-                        return [(x, y), (nx, ny)]
-                    self.counts[typ] -= 1
-                    self.counts[ntyp] -= 1
-                    result = self.solve()
-                    if result:
-                        result.append((x, y))
-                        result.append((nx, ny))
-                        return result
-                    self.possible -= news
-                    self.counts[typ] += 1
-                    self.counts[ntyp] += 1
-                    self.board[y][x] = typ
-                    self.board[ny][nx] = ntyp
-                    self.possible.add((x, y))
-                    self.possible.add((nx, ny))
+                    if ntyp.is_metal and ntyp != self.metal_level:
+                        continue
+                    yield (c, nc)
 
-                    if ntyp.is_metal:
-                        self.metal_level = self.metal_level.prev()
+    def apply_temorary(self, move: Tuple[Coord, ...]) -> MoveUndoer:
+        news = set()
+        undo_moves: List[Tuple[Coord, Element]] = []
+        metal_level = self.metal_level
 
+        for c in move:
+            typ = self[c]
+            assert typ is not None
+            undo_moves.append((c, typ))
+            self[c] = None
+            self.accessible.remove(c)
+            self.counts[typ] -= 1
             if typ.is_metal:
-                self.metal_level = self.metal_level.prev()
+                self.metal_level = self.metal_level.nxt()
+
+        for x, y in move:
+            for n in NEIGHBORS[y][x]:
+                if (
+                    n is not None
+                    and n not in self.accessible
+                    and self[n]
+                    and self.is_accessible(*n)
+                ):
+                    news.add(n)
+
+        self.accessible |= news
+
+        return MoveUndoer(self, undo_moves, metal_level, news)
+
+
+class MoveUndoer:
+    def __init__(
+        self,
+        board_state: BoardState,
+        undo_moves: List[Tuple[Coord, Element]],
+        metal_level: Element,
+        news: Set[Coord],
+    ):
+        self.board_state = board_state
+        self.undo_moves = undo_moves
+        self.metal_level = metal_level
+        self.news = news
+
+    def __enter__(self) -> MoveUndoer:
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        self.board_state.metal_level = self.metal_level
+        self.board_state.accessible -= self.news
+
+        for c, typ in self.undo_moves:
+            self.board_state[c] = typ
+            self.board_state.counts[typ] += 1
+            self.board_state.accessible.add(c)
+
+
+class Solver:
+    def __init__(self, board: Board):
+        self.board = BoardState(board)
+        self.timeout = 1_000_000
+        self.seen: Set[int] = set()
+
+    def solve(self) -> Optional[List[Coord]]:
+        self.timeout -= 1
+        if self.timeout < 0:
+            raise TimeoutException()
+
+        if not self.board.salts_solvable():
+            return None
+
+        for move in list(self.board.possible_moves()):
+            with self.board.apply_temorary(move):
+                h = self.board.hash()
+                if h in self.seen:
+                    continue
+                self.seen.add(h)
+
+                if self.board.solved:
+                    return [*move]
+
+                result = self.solve()
+                if result:
+                    result.extend(move)
+                    return result
 
         return None
+
+
+class TimeoutException(Exception):
+    pass

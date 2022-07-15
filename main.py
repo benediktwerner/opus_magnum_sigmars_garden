@@ -3,7 +3,7 @@ from time import sleep
 
 from detection import detect_board
 from setup import perform_setup
-from solver import Solver
+from solver import Solver, TimeoutException
 from utils import mouseDown, mouseUp, moveTo
 
 
@@ -43,11 +43,15 @@ cell_pos = setup.generate_cell_positions()
 for _ in range(max(1, args.games)):
     board = detect_board(setup, click_delay, args.show_detection)
     print("Starting solve")
-    sol = Solver(board).solve()
+    try:
+        sol = Solver(board).solve()
+        if not sol:
+            print("No solution found")
+    except TimeoutException:
+        print("Timed out. Took too long to find a solution. Moving on.")
+        sol = None
 
-    if not sol:
-        print("No solution found")
-    else:
+    if sol:
         for x, y in reversed(sol):
             p = cell_pos[y][x]
             moveTo(p)
