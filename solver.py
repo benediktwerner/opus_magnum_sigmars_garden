@@ -194,7 +194,7 @@ class Solver:
         if not self.board.salts_solvable():
             return None
 
-        for move in list(self.board.possible_moves()):
+        for move in self.board.possible_moves():
             with self.board.apply_temorary(move):
                 h = self.board.hash()
                 if h in self.seen:
