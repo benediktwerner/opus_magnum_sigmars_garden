@@ -28,7 +28,7 @@ To detect the board, the solver utilizes the fact that the game highlights match
 
 Credit to that idea goes to [Doublevil/SigmarsBoredom](https://github.com/Doublevil/SigmarsBoredom).
 
-Unfortunately, the dark and light elements don't appear in the bottom bar so for those, we first do a differnece with the empty calibration board taken at the start. This, together with the already identified elements allows us to figure out where the leftover dark and light elements are. We then just take the average color in the center of those cells to figure out which one it is.
+Unfortunately, the dark and light elements don't appear in the bottom bar so for those, we first do a differnece with the empty calibration board taken at the start. All the cells with no difference are empty and we already know where all the other elements are so this tells us exactly which cells must be the dark and light ones. To tell which of the two each one is, we then just take the average color in the center of those cells.
 
 ### Solver
 
