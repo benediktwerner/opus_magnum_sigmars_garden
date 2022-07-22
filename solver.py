@@ -183,7 +183,7 @@ class MoveUndoer:
 class Solver:
     def __init__(self, board: Board):
         self.board = BoardState(board)
-        self.timeout = 1_000_000
+        self.timeout = 50_000
         self.seen: Set[int] = set()
 
     def solve(self) -> Optional[List[Coord]]:
