@@ -12,7 +12,10 @@ Solver to automatically play *Sigmar's Garden*, the puzzle mini game innside *Op
 2. Install requirements: `pip install -r requirements.txt`
 3. Run `python main.py`
    - Pass a number to play that many games at once (otherwise it only plays one): `python main.py 25`
-   - Pass `-d 0.1` (or replace `0.1` with any other number) to change the delay between clicks: `python main.py -d 0.1`. The default is `0.02` (seconds). If you are getting bad detection across the board or the board doesn't get cleared properly when it starts to solve, chances are the delay is too small for your PC and the game can't keep up.
+   - Pass `-d 0.5` (or replace `0.5` with any other number) to change the delay between clicks: `python main.py -d 0.5`.
+     - The default is `0.2` (seconds)
+     - If you are getting bad detection across the board or the board doesn't get cleared properly when it starts to solve, chances are the delay is too small for your PC and the game can't keep up.
+     - If your PC is fast, you can also try decreasing the value to let it play faster. The lowest value which worked for me is `0.02` (which is also used in the video above).
    - Pass `--show-detection` to detect the board, display what it detected, and then exit without trying to solve: `python main.py --show-detection`. The window showing the detected board may open in the background i.e. you may have to Alt+Tab to see it.
    - You can also combine multiple options, e.g. `python main.py -d 0.1 --show-detection` or `python main.py 25 -d 0.1`
 4. The solver will wait 3 seconds at the start to give you time to focus the game window

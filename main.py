@@ -17,7 +17,7 @@ parser.add_argument(
     dest="click_delay",
     help="delay between clicks",
     type=float,
-    default=0.02,
+    default=0.2,
     metavar="DELAY",
 )
 parser.add_argument(
