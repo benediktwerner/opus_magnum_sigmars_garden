@@ -103,7 +103,7 @@ def detect_board(setup: Setup, click_delay: float, show_detection: bool) -> Boar
                 if v is None:
                     continue
                 c = setup.to_screenshot_space(c)
-                name = str(v)[len("Element.") :]
+                name = str(v)
                 if name == "QUICKSILVER":
                     name = "QS"
                 clean = cv2.putText(

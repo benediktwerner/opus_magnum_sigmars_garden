@@ -59,6 +59,9 @@ class Element(IntEnum):
     def from_int(x: int) -> Element:
         return ELE_LIST[x - 1]
 
+    def __str__(self) -> str:
+        return super().__str__()[len("Element.") :]
+
 
 ELE_LIST = tuple(Element)
 

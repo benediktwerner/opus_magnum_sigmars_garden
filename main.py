@@ -4,7 +4,7 @@ from time import sleep
 from detection import detect_board
 from setup import perform_setup
 from solver import Solver, TimeoutException
-from utils import mouseDown, mouseUp, moveTo
+from utils import is_invalid_board, mouseDown, mouseUp, moveTo
 
 
 parser = argparse.ArgumentParser()
@@ -42,6 +42,26 @@ cell_pos = setup.generate_cell_positions()
 
 for _ in range(max(1, args.games)):
     board = detect_board(setup, click_delay, args.show_detection)
+
+    error = is_invalid_board(board)
+    if error is not None:
+        print()
+        print("Detected board is invalid or unsolvable")
+        print()
+        print(error)
+        print()
+        print("Troubleshooting steps:")
+        print("- Make sure the calibration is correct:")
+        print("  - Check that empty.png shows an empty board without any elements on it")
+        print("  - If the shown board isn't completely empty, delete the empty.png file, clear the board (i.e. solve it manually, if it's not already empty) and try again.")
+        print("  - If the board isn't shown properly, i.e. a part of the playing area is cut off or it just doesn't show the board at all,")
+        print("    delete the empty.png AND positions.json files and try again. Make sure to properly follow the instructions at the start.")
+        print("- Try a higher click delay. It's possible the current delay is too fast for the game to keep up.")
+        print("  The default click delay is 0.2. Try passing '-d 1' as a command line argument to the solver to use a one second delay instead.")
+        print("- You can pass '--show-detection' as a command line argument to the solver to show the detected board.")
+        print()
+        exit(5)
+
     print("Starting solve")
     try:
         sol = Solver(board).solve()
