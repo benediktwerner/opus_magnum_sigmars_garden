@@ -21,7 +21,7 @@ Solver to automatically play *Sigmar's Garden*, the puzzle mini game innside *Op
 4. The solver will wait 3 seconds at the start to give you time to focus the game window
 5. On the first run, you need to have a cleared board (i.e. you need to solve it manually and have no more elements on the board) to take a calibration image. The sovler will then ask you to place your mouse on a few key locations. To confirm a position, focus the message dialog that opens, move your mouse to the correct position, and confirm the dialog using the <kbd>Enter</kbd> key. After the first run, these values will be saved and won't be required on subsequent runs. If anything about your display resolution changes, you can delete the generated `positions.json` and `empty.png` files to clear the values.
 
-If it goes out of control (i.e. clicks outside the game), you can move the mouse into the top left corner of the screen to abort it.
+If it goes out of control (e.g. clicks outside the game), you can move the mouse into the top left corner of the screen to abort it.
 
 ## How it works
 
