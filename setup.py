@@ -75,7 +75,7 @@ def perform_setup() -> Setup:
         alert("Hover over the center of the first element (salt) in the bottom bar")
         deck1 = position()
 
-        alert("Hover over the center of the second element (water) in the bottom bar")
+        alert("Hover over the center of the second element (air) in the bottom bar")
         deck2 = position()
 
         alert("Hover over the center of the third element (fire) in the bottom bar")

@@ -12,9 +12,9 @@ EMPTY_FILE = path.join(DIRNAME, "empty.png")
 
 class Element(IntEnum):
     SALT = 1
-    WATER = 2
+    AIR = 2
     FIRE = 3
-    WIND = 4
+    WATER = 4
     EARTH = 5
     QUICKSILVER = 6
     LEAD = 7
@@ -29,7 +29,7 @@ class Element(IntEnum):
     def compatible(self, other: Element) -> bool:
         if self == Element.SALT:
             return other <= Element.EARTH
-        if Element.WATER <= self <= Element.EARTH:
+        if Element.AIR <= self <= Element.EARTH:
             return other == Element.SALT or self == other
         if self == Element.QUICKSILVER:
             return Element.LEAD <= other < Element.GOLD
@@ -53,7 +53,7 @@ class Element(IntEnum):
 
     @staticmethod
     def basics() -> Tuple[Element, Element, Element, Element]:
-        return (Element.WATER, Element.FIRE, Element.WIND, Element.EARTH)
+        return (Element.AIR, Element.FIRE, Element.WATER, Element.EARTH)
 
     @staticmethod
     def from_int(x: int) -> Element:

@@ -59,9 +59,9 @@ def is_invalid_board(board: Board) -> Optional[str]:
 
     max_count = {
         Element.SALT: 4,
-        Element.WATER: 8,
+        Element.AIR: 8,
         Element.FIRE: 8,
-        Element.WIND: 8,
+        Element.WATER: 8,
         Element.EARTH: 8,
         Element.QUICKSILVER: 5,
         Element.LEAD: 1,
