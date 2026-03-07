@@ -81,7 +81,7 @@ for game_idx in range(total_games):
             sleep(click_delay)
             mouseUp()
 
-    if game_idx == 0 and total_games > 1:
+    if game_idx < total_games - 1:
         sleep(slow_click_delay)
         moveTo(setup.new_game_btn_pos)
         sleep(slow_click_delay)
