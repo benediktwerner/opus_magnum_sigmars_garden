@@ -41,16 +41,37 @@ setup = perform_setup()
 cell_pos = setup.generate_cell_positions()
 
 total_games = max(1, args.games)
-for game_idx in range(total_games):
-    board = detect_board(setup, click_delay, args.show_detection)
 
-    error = is_invalid_board(board)
-    if error is not None:
+
+def start_new_game(delay=5):
+    sleep(slow_click_delay)
+    moveTo(setup.new_game_btn_pos)
+    sleep(slow_click_delay)
+    mouseDown()
+    sleep(slow_click_delay)
+    mouseUp()
+    sleep(delay)
+
+
+for game_idx in range(total_games):
+    while True:
+        board = detect_board(setup, click_delay, args.show_detection)
+
+        error = is_invalid_board(board)
+        if error is None:
+            break
+
         print()
         print("Detected board is invalid or unsolvable")
         print()
         print(error)
         print()
+
+        if total_games > 1:
+            print("Starting a new game and retrying board detection...")
+            start_new_game(delay=6)
+            continue
+
         print("Troubleshooting steps:")
         print("- Make sure the calibration is correct:")
         print("  - Check that empty.png shows an empty board without any elements on it")
@@ -82,10 +103,4 @@ for game_idx in range(total_games):
             mouseUp()
 
     if game_idx < total_games - 1:
-        sleep(slow_click_delay)
-        moveTo(setup.new_game_btn_pos)
-        sleep(slow_click_delay)
-        mouseDown()
-        sleep(slow_click_delay)
-        mouseUp()
-        sleep(5)
+        start_new_game()
