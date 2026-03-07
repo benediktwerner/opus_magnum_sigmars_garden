@@ -60,7 +60,7 @@ class Element(IntEnum):
         return ELE_LIST[x - 1]
 
     def __str__(self) -> str:
-        return super().__str__()[len("Element.") :]
+        return self.name
 
 
 ELE_LIST = tuple(Element)

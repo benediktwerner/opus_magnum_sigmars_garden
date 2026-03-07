@@ -40,7 +40,8 @@ for i in range(3, 0, -1):
 setup = perform_setup()
 cell_pos = setup.generate_cell_positions()
 
-for _ in range(max(1, args.games)):
+total_games = max(1, args.games)
+for game_idx in range(total_games):
     board = detect_board(setup, click_delay, args.show_detection)
 
     error = is_invalid_board(board)
@@ -80,10 +81,11 @@ for _ in range(max(1, args.games)):
             sleep(click_delay)
             mouseUp()
 
-    sleep(slow_click_delay)
-    moveTo(setup.new_game_btn_pos)
-    sleep(slow_click_delay)
-    mouseDown()
-    sleep(slow_click_delay)
-    mouseUp()
-    sleep(5)
+    if game_idx < total_games - 1:
+        sleep(slow_click_delay)
+        moveTo(setup.new_game_btn_pos)
+        sleep(slow_click_delay)
+        mouseDown()
+        sleep(slow_click_delay)
+        mouseUp()
+        sleep(5)
