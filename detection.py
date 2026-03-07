@@ -67,13 +67,18 @@ def detect_board(setup: Setup, click_delay: float, show_detection: bool) -> Boar
             x2 = int(c.x + setup.cell_width / 4)
             y2 = int(c.y + setup.cell_height / 4)
             val = sum(cv2.mean(diff[y1:y2, x1:x2]))
+
+            cx1 = int(c.x - setup.cell_width / 8)
+            cy1 = int(c.y - setup.cell_height / 8)
+            cx2 = int(c.x + setup.cell_width / 8)
+            cy2 = int(c.y + setup.cell_height / 8)
             delta = (
-                sum(cv2.mean(clean[y1:y2, x1:x2]))
-                - sum(cv2.mean(setup.empty_img[y1:y2, x1:x2]))
+                sum(cv2.mean(clean[cy1:cy2, cx1:cx2]))
+                - sum(cv2.mean(setup.empty_img[cy1:cy2, cx1:cx2]))
             )
 
             # nothing ~0-10 (small screenshot/calibration noise)
-            # Use `delta` sign in ambiguous ranges:
+            # Use center-cell `delta` sign in ambiguous ranges:
             # positive -> LIGHT (cell got brighter), negative -> DARK.
 
             if val < 12:
