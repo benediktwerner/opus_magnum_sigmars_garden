@@ -68,14 +68,14 @@ def detect_board(setup: Setup, click_delay: float, show_detection: bool) -> Boar
             y2 = int(c.y + setup.cell_height / 4)
             val = sum(cv2.mean(diff[y1:y2, x1:x2]))
 
-            # nothing 0
+            # nothing ~0-10 (small screenshot/calibration noise)
             # dark-light ~5
             # dark-dark 15-20
             # light-dark 60-80
             # light-light ~30
             # numbers ^ are per color channel, below is 3x
 
-            if val < 4:
+            if val < 12:
                 continue
             elif val < 30:
                 board[y][x] = Element.LIGHT
