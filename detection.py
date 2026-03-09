@@ -68,23 +68,29 @@ def detect_board(setup: Setup, click_delay: float, show_detection: bool) -> Boar
             y2 = int(c.y + setup.cell_height / 4)
             val = sum(cv2.mean(diff[y1:y2, x1:x2]))
 
-            # nothing 0
-            # dark-light ~5
-            # dark-dark 15-20
-            # light-dark 60-80
-            # light-light ~30
-            # numbers ^ are per color channel, below is 3x
+            cx1 = int(c.x - setup.cell_width / 8)
+            cy1 = int(c.y - setup.cell_height / 8)
+            cx2 = int(c.x + setup.cell_width / 8)
+            cy2 = int(c.y + setup.cell_height / 8)
+            delta = (
+                sum(cv2.mean(clean[cy1:cy2, cx1:cx2]))
+                - sum(cv2.mean(setup.empty_img[cy1:cy2, cx1:cx2]))
+            )
 
-            if val < 4:
+            # nothing ~0-10 (small screenshot/calibration noise)
+            # Use center-cell `delta` sign in ambiguous ranges:
+            # positive -> LIGHT (cell got brighter), negative -> DARK.
+
+            if val < 12:
                 continue
             elif val < 30:
-                board[y][x] = Element.LIGHT
+                board[y][x] = Element.LIGHT if delta >= 0 else Element.DARK
             elif val < 3 * 23:
-                board[y][x] = Element.DARK
+                board[y][x] = Element.DARK if delta < 0 else Element.LIGHT
             elif val < 3 * 50:
-                board[y][x] = Element.LIGHT
+                board[y][x] = Element.LIGHT if delta >= 0 else Element.DARK
             else:
-                board[y][x] = Element.DARK
+                board[y][x] = Element.DARK if delta < 0 else Element.LIGHT
 
             # diff = cv2.rectangle(diff, (x1, y1), (x2, y2), 255)
             # txt.append((val, (c.x, c.y)))
