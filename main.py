@@ -86,4 +86,6 @@ for _ in range(max(1, args.games)):
     mouseDown()
     sleep(slow_click_delay)
     mouseUp()
-    sleep(5)
+    sleep(slow_click_delay)
+    moveTo(setup.deck1_pos)
+    sleep(5 - slow_click_delay)
